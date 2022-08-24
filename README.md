@@ -26,18 +26,24 @@
 사용자는 팀원들의 가벼운 인사말과 TMI를 제공받을 수 있습니다.  
 
 ## 4. 핵심 트러블 슈팅
-### 4.1. 핵심 트러블
-- 내용
+### 4.1. flask 배포 후 캐시메모리 오류
+- 배포 후 웹페이지를 접속하고 새로고침 or 기능을 실행 하였을 때, 무한 로딩에 갇히는 상황이 발생
+![무한로딩](https://user-images.githubusercontent.com/104430302/186332226-19457837-b3e7-4a1b-a050-51fe76aeb360.png)
 
-- 과정
+- 확인 결과 여러 플랫폼 중 Safari에서는 정상적으로 작동 하였고, 그 외 크롬,엣지,웨일 등 똑같은 오류가 발생    
+  캐시 메모리가 초기화되지 않았을 때 발생하는 것으로 보여져 캐시 메모리 삭제 후 실행하니 정상 작동
+  하지만, 정상 작동 후 다시 캐시 메모리가 생겨나 같은 오류 반복 발생
 
-- 이유
-
+- flask 캐시 삭제 기능을 추가 하여 해결
+```
+@app.after_request
+def set_response_headers(response):
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+```
 </br>
 
-## 5. 그 외 트러블 슈팅
-
-</br>
-
-## 6. 회고 / 느낀점
+## 5. 회고 / 느낀점
 >프로젝트 개발 회고 글: https://hee94.tistory.com/6  
